@@ -39,4 +39,95 @@ impl Vm {
             self.execute(op, offending_ip);
         }
     }
+
+    pub fn push(&mut self, val: i64, ip: usize) {
+        if self.stack.len() >= 1024 {
+            panic!("trap at ip={:#04X}: stack overflow", ip);
+        }
+        self.stack.push(val);
+    }
+
+    pub fn pop(&mut self, ip: usize) -> i64 {
+        self.stack.pop().unwrap_or_else(|| {
+            panic!("trap at ip={:#04X}: stack underflow", ip)
+        })
+    }
+
+    pub fn execute(&mut self, op: Op, ip: usize) {
+        match op {
+            Op::Push(n) => self.push(n, ip),
+            Op::Pop => { 
+                self.pop(ip); // Pops and throws away the value
+            }
+            Op::Dup => {
+                let val = *self.stack.last().unwrap_or_else(|| {
+                    panic!("trap at ip={:#04X}: stack underflow (DUP on empty stack)", ip)
+                });
+                self.push(val, ip);
+            }
+            Op::Swap => {
+                let len = self.stack.len();
+                if len < 2 {
+                    panic!("trap at ip={:#04X}: stack underflow (SWAP requires 2 elements)", ip);
+                }
+                self.stack.swap(len - 1, len - 2);
+            }
+            
+            // --- Arithmetic Operations ---
+            
+            Op::Add => {
+                let b = self.pop(ip);
+                let a = self.pop(ip);
+                self.push(a + b, ip);
+            }
+            Op::Sub => {
+                let b = self.pop(ip);
+                let a = self.pop(ip);
+                self.push(a - b, ip);
+            }
+            Op::Mul => {
+                let b = self.pop(ip);
+                let a = self.pop(ip);
+                self.push(a * b, ip);
+            }
+            Op::Div => {
+                let b = self.pop(ip);
+                let a = self.pop(ip);
+                if b == 0 {
+                    panic!("trap at ip={:#04X}: division by zero", ip);
+                }
+                self.push(a / b, ip);
+            }
+            Op::Mod => {
+                let b = self.pop(ip);
+                let a = self.pop(ip);
+                if b == 0 {
+                    panic!("trap at ip={:#04X}: modulo by zero", ip);
+                }
+                self.push(a % b, ip);
+            }
+            Op::Neg => {
+                let a = self.pop(ip);
+                self.push(-a, ip);
+            }
+            
+            // --- Memory and I/O ---
+            
+            Op::Load(slot) => {
+                let val = self.globals[slot as usize];
+                self.push(val, ip);
+            }
+            Op::Store(slot) => {
+                let val = self.pop(ip);
+                self.globals[slot as usize] = val;
+            }
+            Op::Print => {
+                let val = self.pop(ip);
+                println!("{}", val);
+            }
+            Op::Halt => {
+                self.ip = self.code.len(); 
+            }
+        }
+    }
 }
