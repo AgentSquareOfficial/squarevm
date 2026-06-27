@@ -1,0 +1,19 @@
+; arith.tasm
+; Computes: (7 + 3) * (9 - 4) / 5
+; Expected output: 10
+
+PUSH 7      ; Stack: [7]
+PUSH 3      ; Stack: [7, 3]
+ADD         ; Stack: [10]
+
+PUSH 9      ; Stack: [10, 9]
+PUSH 4      ; Stack: [10, 9, 4]
+SUB         ; Stack: [10, 5]
+
+MUL         ; Stack: [50]
+
+PUSH 5      ; Stack: [50, 5]
+DIV         ; Stack: [10]
+
+PRINT       ; Prints 10, Stack: []
+HALT

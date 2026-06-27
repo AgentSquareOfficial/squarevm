@@ -1,0 +1,20 @@
+; horner.tasm
+; Evaluates: ((3 * x + 2) * x + 5) * x + 7, where x = 11
+
+PUSH 11
+STORE 0     ; Save 11 into global slot 0. Stack: []
+PUSH 3      ; Stack: [3]
+LOAD 0      ; Stack: [3, 11]
+MUL         ; Stack: [33]
+PUSH 2      ; Stack: [33, 2]
+ADD         ; Stack: [35]
+LOAD 0      ; Stack: [35, 11]
+MUL         ; Stack: [385]
+PUSH 5      ; Stack: [385, 5]
+ADD         ; Stack: [390]
+LOAD 0      ; Stack: [390, 11]
+MUL         ; Stack: [4290]
+PUSH 7      ; Stack: [4290, 7]
+ADD         ; Stack: [4297]
+PRINT       ; Prints 4297
+HALT

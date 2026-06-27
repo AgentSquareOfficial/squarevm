@@ -1,0 +1,35 @@
+; digits.tasm
+; Extracts and prints the digits 9, 2, 7, 4 sequentially
+
+PUSH 9274
+STORE 1     ; Save 9274 to global slot 1 to reuse it. Stack: []
+
+; Extract 9 (9274 / 1000)
+LOAD 1      ; Stack: [9274]
+PUSH 1000   ; Stack: [9274, 1000]
+DIV         ; Stack: [9]
+PRINT       ; Prints 9. Stack: []
+
+; Extract 2 ((9274 / 100) % 10)
+LOAD 1      ; Stack: [9274]
+PUSH 100    ; Stack: [9274, 100]
+DIV         ; Stack: [92]
+PUSH 10     ; Stack: [92, 10]
+MOD         ; Stack: [2]
+PRINT       ; Prints 2. Stack: []
+
+; Extract 7 ((9274 / 10) % 10)
+LOAD 1      ; Stack: [9274]
+PUSH 10     ; Stack: [9274, 10]
+DIV         ; Stack: [927]
+PUSH 10     ; Stack: [927, 10]
+MOD         ; Stack: [7]
+PRINT       ; Prints 7. Stack: []
+
+; Extract 4 (9274 % 10)
+LOAD 1      ; Stack: [9274]
+PUSH 10     ; Stack: [9274, 10]
+MOD         ; Stack: [4]
+PRINT       ; Prints 4. Stack: []
+
+HALT

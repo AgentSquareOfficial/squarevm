@@ -1,0 +1,12 @@
+; celsius.tasm
+; Formula: F = C * 9 / 5 + 32
+
+PUSH 100    ; Stack: [100]
+PUSH 9      ; Stack: [100, 9]
+MUL         ; Stack: [900]
+PUSH 5      ; Stack: [900, 5]
+DIV         ; Stack: [180]
+PUSH 32     ; Stack: [180, 32]
+ADD         ; Stack: [212]
+PRINT       ; Prints 212
+HALT

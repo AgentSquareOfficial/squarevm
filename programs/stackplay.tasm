@@ -1,0 +1,20 @@
+; stackplay.tasm
+; Computes 12^2 + 35^2 using DUP and SWAP
+
+PUSH 12     ; Stack: [12]
+PUSH 35     ; Stack: [12, 35]
+
+; Square the top number (35)
+DUP         ; Stack: [12, 35, 35]
+MUL         ; Stack: [12, 1225]
+
+; Bring the 12 to the top to square it
+SWAP        ; Stack: [1225, 12]
+DUP         ; Stack: [1225, 12, 12]
+MUL         ; Stack: [1225, 144]
+
+; Add the two squares together
+ADD         ; Stack: [1369]
+
+PRINT       ; Prints 1369
+HALT
